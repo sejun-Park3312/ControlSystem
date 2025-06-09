@@ -17,7 +17,7 @@ z_target = 10/1000
 F_MA = MF.MagnetArray_Force(z_target)
 A_Coeff = MF.CoilArray_ACoeff(z_target)
 
-print(F_MA[2])
+print(F_MA)
 print(A_Coeff)
 
 

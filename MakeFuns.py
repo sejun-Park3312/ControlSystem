@@ -9,7 +9,7 @@ class MakeFuns:
         self.BF = BasicMagnetFuns()
 
         # Coil/Magent Array
-        Data = np.load("Data.npz")
+        Data = np.load("Array_Data/Data.npz")
         self.C_Points = Data['C_Points']
         self.C_Angles = Data['C_Angles']
         self.M_Points = Data['M_Points']
@@ -17,7 +17,7 @@ class MakeFuns:
 
         # DipoleMoment Magnitude
         self.Ms = 2
-        self.Mc = 0.8 # NA
+        self.Mc = 0.92 # NA
         self.Mt = 0.0265
 
         # Reference Distance
