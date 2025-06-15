@@ -3,6 +3,7 @@ import threading
 import numpy as np
 from simple_pid import PID
 from MakeFuns import MakeFuns
+from pyfirmata2 import ArduinoMega, util
 import time
 import csv
 
@@ -34,6 +35,8 @@ class VisionControl:
                       [self.z_offset]], dtype=np.float64)  # 이동 벡터 (3x1)
         self.T_World2Cam1 = T = np.vstack((np.hstack((self.R_World2Cam1, self.P_World2Cam1.reshape(3,1))), [[0, 0, 0, 1]]))
 
+        # Arduino
+        self.board, self.it, self.pwm_list, self.dir_list, self.brk_list = self.ReadyArduino()
 
         # Threading
         self.lock = threading.Lock()
@@ -42,6 +45,37 @@ class VisionControl:
         self.I_discrete = 0
         self.running = True
         self.Start_Time = 0
+
+
+    def ReadyArduino(self):
+
+        board = ArduinoMega('COM4')  # 실제 연결된 포트로 수정 필요
+        it = util.Iterator(board)
+
+        # 핀 번호 배열 정의
+        PWM_PINS = [2, 3, 4, 5, 6, 7, 8, 9]
+        DIR_PINS = [30, 31, 32, 33, 34, 35, 36, 37]
+        BRK_PINS = [38, 39, 40, 41, 42, 43, 44, 45]
+
+        # 핀 객체 리스트
+        pwm_list = [board.get_pin(f'd:{pin}:p') for pin in PWM_PINS]
+        dir_list = [board.get_pin(f'd:{pin}:o') for pin in DIR_PINS]
+        brk_list = [board.get_pin(f'd:{pin}:o') for pin in BRK_PINS]
+
+        # 방향 설정
+        dir_list[0].write(1) # 3사분면
+        dir_list[1].write(1) # 4사분면
+        dir_list[2].write(0) # 1사분면
+        dir_list[3].write(0) # 2사분면
+        dir_list[4].write(0) # +-x축
+        dir_list[5].write(1) # -y축
+        dir_list[6].write(0) # +y축
+        dir_list[7].write(1) # center
+
+        for i in range(8):
+            brk_list[i].write(1)  # 브레이크 ON
+
+        return board, it, pwm_list, dir_list, brk_list
 
 
     def ReadyVision(self):
@@ -227,6 +261,12 @@ class VisionControl:
             for row in ZdTIT_Data:
                 writer.writerow(row)
 
+    def Arduino(self, I):
+
+        for i in range(8):
+            self.pwm_list[i].write(I/self.I_Max)
+
+
     def Start(self):
 
         # Vision Thread
@@ -239,11 +279,22 @@ class VisionControl:
         control_thread.daemon = True
         control_thread.start()
 
+        # Arduino Start
+        self.it.start()
+        time.sleep(1)
+        for i in range(8):
+            self.brk_list[i].write(0)  # 브레이크 해제
+
         # Start(Esc 누르면 탈출)
+        print(f"⏹️ 드라이버 {i} 시작!!!\n")
+        Curr_Time = 0
         try:
             while self.running:
-                time.sleep(1)
-                print(f"Z: {self.Z*1000:.2f} mm, A: {self.I_discrete:.2f} A")
+                time.sleep(self.Ts_Control)
+                self.Arduino(self.I_discrete)
+                if time.time() - Curr_Time > 1:
+                    print(f"Z: {self.Z*1000:.2f} mm, A: {self.I_discrete:.2f} A")
+                    Curr_Time = time.time()
 
                 if cv2.waitKey(1) == 27:  # ESC
                     self.running = False
@@ -253,3 +304,13 @@ class VisionControl:
             self.running = False  # 종료 플래그 내려서 두 스레드 종료
             vision_thread.join()
             control_thread.join()
+
+        for i in range(8):
+            self.pwm_list[i].write(0)  # PWM OFF
+            self.brk_list[i].write(1)  # 브레이크 ON
+
+        print(f"⏹️ 드라이버 {i} 정지됨!!!\n")
+        time.sleep(1)  # 다음 드라이버 전환 전 잠깐 대기
+
+        # 종료 처리
+        self.board.exit()
