@@ -21,6 +21,7 @@ class VisionControl:
         self.PID_Gain =1e-1
         self.pid = PID(Kp=self.PID_Gain, Kd=self.PID_Gain/10, Ki=0, setpoint = 0)
         self.pid.sample_time = self.Ts_Control
+        self.Weight = 0.006776951342543
 
         # Vision Setting
         self.Ts_Vision = 15/1000
@@ -215,7 +216,7 @@ class VisionControl:
                 Z = self.Z
                 dT = self.dT
             F_need = self.pid(Z, dt = dT)
-            I_input = (F_need - self.MF.MagnetArray_Force(Z + self.Ref_Movement) - self.F_Buoyance) / self.MF.CoilArray_ACoeff(Z + self.Ref_Movement)
+            I_input = (self.Weight + F_need - self.MF.MagnetArray_Force(Z + self.Ref_Movement) - self.F_Buoyance) / self.MF.CoilArray_ACoeff(Z + self.Ref_Movement)
             self.I_discrete = float(np.round(np.clip(I_input, 0, self.I_Max) / 0.02) * 0.02)
 
             ZdTIT_Data.append((Z, dT, self.I_discrete, time.time()))
@@ -242,7 +243,7 @@ class VisionControl:
         try:
             while self.running:
                 time.sleep(1)
-                # print(f"Z: {self.Z*1000:.2f} mm, A: {self.I_discrete:.2f} A")
+                print(f"Z: {self.Z*1000:.2f} mm, A: {self.I_discrete:.2f} A")
 
                 if cv2.waitKey(1) == 27:  # ESC
                     self.running = False
