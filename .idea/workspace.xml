@@ -4,7 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="35704c77-9429-4047-a464-64d1a579fc76" name="Changes" comment="">
+    <list default="true" id="35704c77-9429-4047-a464-64d1a579fc76" name="Changes" comment=".">
+      <change beforePath="$PROJECT_DIR$/Results_Data/XYZT_Data.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Results_Data/XYZT_Data.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/VisionControl.py" beforeDir="false" afterPath="$PROJECT_DIR$/VisionControl.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -65,6 +66,19 @@
       <option name="presentableId" value="Default" />
       <updated>1749445520043</updated>
     </task>
+    <task id="LOCAL-00001" summary=".">
+      <option name="closed" value="true" />
+      <created>1749984467441</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1749984467441</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="." />
+    <option name="LAST_COMMIT_MESSAGE" value="." />
   </component>
 </project>
