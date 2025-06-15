@@ -12,12 +12,8 @@ class VisionControl:
         # MakeFuns
         self.MF = MakeFuns()
 
-        # Vision Setting
-        self.Ts_Vision = 15/1000
-        self.Cam1, self.Cam2, self.P1, self.P2, self.K1, self.K2, self.D1, self.D2, self.ROI_1, self.ROI_2 = self.ReadyVision()
-
         # Control Setting
-        self.z_offset = 0/1000
+        self.z_offset = 10/1000
         self.Ts_Control = 20/1000
         self.F_Buoyance = 0.005146777750500
         self.I_Max = 1.5
@@ -25,6 +21,18 @@ class VisionControl:
         self.PID_Gain =1e-1
         self.pid = PID(Kp=self.PID_Gain, Kd=self.PID_Gain/10, Ki=0, setpoint = 0)
         self.pid.sample_time = self.Ts_Control
+
+        # Vision Setting
+        self.Ts_Vision = 15/1000
+        self.Cam1, self.Cam2, self.P1, self.P2, self.K1, self.K2, self.D1, self.D2, self.ROI_1, self.ROI_2 = self.ReadyVision()
+        self.R_World2Cam1 = np.array([[1, 0, 0],
+                      [0, 0, 1],
+                      [0, -1, 0]], dtype=np.float64)
+        self.P_World2Cam1 = np.array([[0],
+                      [-200/1000],
+                      [self.z_offset]], dtype=np.float64)  # 이동 벡터 (3x1)
+        self.T_World2Cam1 = T = np.vstack((np.hstack((self.R_World2Cam1, self.P_World2Cam1.reshape(3,1))), [[0, 0, 0, 1]]))
+
 
         # Threading
         self.lock = threading.Lock()
@@ -43,7 +51,7 @@ class VisionControl:
         D1 = np.load('Cam_Data/cam_D_1.npy')
         D2 = np.load('Cam_Data/cam_D_2.npy')
 
-        # Camera Transformation Matrix
+        # Camera 1 to 2 Transformation Matrix
         R = np.array([[0, 0, 1],
                       [0, 1, 0],
                       [-1, 0, 0]], dtype=np.float64)
@@ -63,8 +71,8 @@ class VisionControl:
         Cam2.set(cv2.CAP_PROP_FPS, 100)
 
         # Set ROI(x,y,w,h)
-        ROI_1 = [80, 60, 450, 350]
-        ROI_2 = [120, 125, 400, 250]
+        ROI_1 = [50, 125, 550, 300]
+        ROI_2 = [80, 60, 450, 350]
 
         return Cam1, Cam2, P1, P2, K1, K2, D1, D2, ROI_1, ROI_2
 
@@ -106,7 +114,7 @@ class VisionControl:
         roi_frame2 = frame2_undist[self.ROI_2[1]:self.ROI_2[1] + self.ROI_2[3],
                      self.ROI_2[0]:self.ROI_2[0] + self.ROI_2[2]]
 
-        # Get Center(ROI Frame tuple)
+        # Get Center
         pt1 = self.Get_Center(roi_frame1)
         pt2 = self.Get_Center(roi_frame2)
 
@@ -119,9 +127,12 @@ class VisionControl:
             pts4d = cv2.triangulatePoints(self.P1, self.P2, pt1_orig.T, pt2_orig.T)
             pts3d = (pts4d / pts4d[3])[:3].flatten()
             x_Cam1, y_Cam1, z_Cam1 = pts3d.flatten()
-            x = x_Cam1
-            y = z_Cam1
-            z = -y_Cam1 + self.z_offset
+
+            P_Cam1 = np.array([[x_Cam1], [y_Cam1], [z_Cam1], [1]])
+            P_World = self.T_World2Cam1 @ P_Cam1
+            x = float(P_World[0])
+            y = float(P_World[1])
+            z = float(P_World[2])
             Position.append((x,y,z))
 
             # Visualization
@@ -231,7 +242,12 @@ class VisionControl:
         try:
             while self.running:
                 time.sleep(1)
-                print(f"Z: {self.Z*1000:.2f} mm, A: {self.I_discrete:.2f} A")
+                # print(f"Z: {self.Z*1000:.2f} mm, A: {self.I_discrete:.2f} A")
+
+                if cv2.waitKey(1) == 27:  # ESC
+                    self.running = False
+                    break
+
         except KeyboardInterrupt:
             self.running = False  # 종료 플래그 내려서 두 스레드 종료
             vision_thread.join()
