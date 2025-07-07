@@ -1,4 +1,5 @@
-from VisionControl import VisionControl
+from Vision import Vision
 
-VC = VisionControl()
-VC.Start()
+VS = Vision()
+VS.Start()
+
