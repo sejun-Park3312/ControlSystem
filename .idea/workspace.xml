@@ -5,11 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="35704c77-9429-4047-a464-64d1a579fc76" name="Changes" comment=".">
-      <change afterPath="$PROJECT_DIR$/Control.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Vision.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test0707.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TestVision.py" beforeDir="false" afterPath="$PROJECT_DIR$/TestVision.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Control.py" beforeDir="false" afterPath="$PROJECT_DIR$/Control.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test0707.py" beforeDir="false" afterPath="$PROJECT_DIR$/test0707.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,11 +62,12 @@
     "Python.Vision.executor": "Debug",
     "Python.VisionControl_System.executor": "Debug",
     "Python.data.executor": "Run",
+    "Python.test0707.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "Final0707",
     "last_opened_file_path": "C:/Users/MSI/PycharmProjects/ControlSystem",
-    "settings.editor.selected.configurable": "org.jetbrains.plugins.github.ui.GithubSettingsConfigurable"
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -104,7 +103,15 @@
       <option name="project" value="LOCAL" />
       <updated>1751870260581</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary=".">
+      <option name="closed" value="true" />
+      <created>1751876617561</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1751876617561</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">

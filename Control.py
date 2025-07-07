@@ -1,5 +1,8 @@
 import numpy as np
 import math
+import time
+import threading
+from simple_pid import PID
 from BasicMagnetFuns import BasicMagnetFuns
 
 class Control:
@@ -23,6 +26,21 @@ class Control:
         # Reference Distance
         self.Ref_z = 90/1000
 
+        # Control Setting
+        self.z_offset = 0/1000
+        self.SamplingTime = 20 / 1000
+        self.F_Buoyance = 0.005146777750500
+        self.I_Max = 1.5
+        self.Ref_Movement = 10/1000 # Target과 Array간 거리를 이만큼 줄이겠다
+        self.PID_Gain =1e-1
+        self.pid = PID(Kp=self.PID_Gain, Kd=self.PID_Gain/10, Ki=0, setpoint = 0)
+        self.pid.sample_time = self.SamplingTime
+
+        # Else
+        self.Running = True
+        self.I = 0
+
+        self.lock = threading.Lock()
 
     def Angle2Direction(self, Angle):
         Direction = np.array([math.sin(Angle[1])*math.cos(Angle[0]), math.sin(Angle[1])*math.sin(Angle[0]), math.cos(Angle[1])])
@@ -59,3 +77,13 @@ class Control:
 
         Az_Coeff = A_vec[2]
         return Az_Coeff
+
+
+    def Get_Current(self, z):
+
+        while self.Running:
+            time.sleep(self.SamplingTime)
+            with self.lock:
+                F_need = self.pid(z)
+                I_input = (F_need - self.MagnetArray_Force(z + self.Ref_Movement) - self.F_Buoyance) / self.CoilArray_ACoeff(z + self.Ref_Movement)
+                self.I = float(np.round(np.clip(I_input, 0, self.I_Max) / 0.02) * 0.02)
