@@ -10,6 +10,7 @@ import csv
 class VisionControl:
     def __init__(self):
 
+        print("Vision Initializaing...")
         # MakeFuns
         self.MF = MakeFuns()
 
@@ -45,6 +46,8 @@ class VisionControl:
         self.I_discrete = 0
         self.running = True
         self.Start_Time = 0
+
+        print("Vision Ready!")
 
 
     def ReadyArduino(self):

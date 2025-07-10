@@ -91,5 +91,6 @@ M_Angles = np.array([
     [1.38493840252179, 1.18276351933666]
 ])
 
-
+C_Points[:,2] = 0
+M_Points[:,2] = 0.4
 np.savez('Data.npz', C_Points = C_Points, C_Angles = C_Angles, M_Points = M_Points, M_Angles = M_Angles)

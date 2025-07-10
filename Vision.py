@@ -7,6 +7,8 @@ import csv
 class Vision:
     def __init__(self):
 
+        print("Vision Initializing...")
+
         # Vision Setting
         self.Z_Offset = 10/1000
         self.SamplingTime = 20/1000
@@ -26,6 +28,8 @@ class Vision:
                       [-200/1000],
                       [self.Z_Offset]], dtype=np.float64)  # 이동 벡터 (3x1)
         self.T_World2Cam1 = T = np.vstack((np.hstack((self.R_World2Cam1, self.P_World2Cam1.reshape(3,1))), [[0, 0, 0, 1]]))
+
+        print("Vision Ready!")
 
 
     def Ready(self):
@@ -135,7 +139,7 @@ class Vision:
             # Show Image
             cv2.imshow("Camera 1", frame1_undist)
             cv2.imshow("Camera 2", frame2_undist)
-            cv2.waitKey(1)
+
             # Return
             return Position
 
@@ -145,13 +149,19 @@ class Vision:
         StartTime = time.time()
         CurrTime = time.time()
 
+        print("Start Tracking!")
         while self.Running:
             AvgPosition = self.XYZT_Data[-1][0:3]
             CurrTime = time.time()
 
             while time.time() - CurrTime < self.SamplingTime:
+
                 Position = self.Get_Position()
-                cv2.waitKey(1)
+                if cv2.waitKey(1) == 27:  # ESC
+                    self.Running = False
+                    print("Vision Stopped")
+                    break
+
                 if Position:
                     AvgPosition = [x / 2 + y / 2 for x, y in zip(AvgPosition, Position)]
 
@@ -161,10 +171,7 @@ class Vision:
             with self.lock:
                     self.Z = AvgPosition[2]
 
-
-    def CloseVision(self):
-
-        self.Running = False
+        print("End Tracking!")
         self.Cam1.release()
         self.Cam2.release()
         cv2.destroyAllWindows()

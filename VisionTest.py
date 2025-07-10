@@ -1,29 +1,15 @@
 from Vision import Vision
+import cv2
 import time
 import keyboard
 import threading
 
-print("Ready Vision...")
 VS = Vision()
+vision_thread = threading.Thread(target=VS.Tracking, daemon = True)
+vision_thread.start()
 
-try:
-    print("Vision Started!")
-    while True:
-        # threading.Thread(target=VS.Tracking, daemon=True)
-        VS.Tracking()
-        # ESC 누르면 종료
-        if keyboard.is_pressed('esc'):
-            print("Closing...")
-            VS.CloseVision()
-            print("Vision Closed!")
-            break
-
-        print(VS.Z)
-        time.sleep(3)
-
-
-except KeyboardInterrupt:
-    VS.CloseVision()
-
-finally:
-    VS.CloseVision()
+while VS.Running:
+    if cv2.waitKey(1) == 27:  # ESC
+        VS.Running = False
+        print("Test Stopped!")
+        break
