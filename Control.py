@@ -88,7 +88,3 @@ class Control:
         I = (F_pid - self.MagnetArray_Force() - self.F_Buoyance + self.Weight) / self.CoilArray_ACoeff()
         PWM = round(float(np.clip(I, 0, self.I_Max) * 255 / self.I_Max))
         return PWM
-
-
-
-

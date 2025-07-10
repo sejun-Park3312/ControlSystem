@@ -16,7 +16,8 @@ class TotalSystem:
         self.Running = True
 
         self.Data = RealTimeData_Recorder()
-        self.Data.DefineData("ControlData", ["Z_Error", "Z_System", "Z_Target", "PWM"])
+        self.DataName = "ControlData"
+        self.Data.DefineData(self.DataName, ["Z_Error", "Z_System", "Z_Target", "PWM"])
 
 
     def Start(self):
@@ -37,12 +38,21 @@ class TotalSystem:
             time.sleep(self.CT.SamplingTime)
             with self.lock:
                 self.CT.Z_Target = self.VS.Z
-                self.DR.AppendData("VisionData", self.VS.XYZT_Data)
+                PWM = self.CT.Get_PWM()
+                self.Data.AppendData(self.DataName, [(self.CT.Z_Reference - (self.CT.Z_System - self.CT.Z_Target)),
+                                                     self.CT.Z_System, self.CT.Z_Target, PWM])
 
-            PWM = self.CT.Get_PWM()
             self.AD.Send_PWM(PWM)
             print(PWM)
 
         self.AD.Disconnect()
         print("TotalSystem Ended!")
 
+
+    def SaveResults(self):
+        print("Saving Results...")
+        # Align Vision Timestamp to Reference
+        self.Data[self.DataName]["Time"]["StartTime"] = self.VS.Data[self.VS.DataName]["Time"]["StartTime"]
+        # Save Data
+        self.VS.Data.SaveData(self.VS.DataName, self.VS.DataName)
+        self.VS.Data.SaveData(self.DataName, self.DataName)

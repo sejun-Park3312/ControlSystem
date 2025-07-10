@@ -1,6 +1,7 @@
 import time
 import numpy as np
 import pandas as pd
+import os
 
 class RealTimeData_Recorder:
     def __init__(self):
@@ -41,8 +42,17 @@ class RealTimeData_Recorder:
             self.Data[DataName]['Time']['TimeStamp'].append(time.time())
 
 
-    def SaveData(self, Data, FileName):
-        FileName += '.xlsx'
+    def SaveData(self, DataName, FileName, SavePath = None):
+
+        if SavePath is None:
+            SavePath = './Results/'
+        os.makedirs(SavePath, exist_ok=True)
+        FullFileName = os.path.join(SavePath, FileName + '.xlsx')
+
+        Data = self.Data[DataName]
+        StartTime = Data['Time']['StartTime']
+        Data['Time']['TimeStamp'] = [t - StartTime for t in Data['Time']['TimeStamp']]
+
         TimeStamp = Data["Time"]["TimeStamp"]
         Value = Data["Value"]
 
@@ -51,5 +61,5 @@ class RealTimeData_Recorder:
             ExelData[key] = Value[key]
 
         df = pd.DataFrame(ExelData)
-        df.to_excel(FileName, index=False)
-        print(f"Data Saved!")
+        df.to_excel(FullFileName, index=False)
+        print(f"{FileName} Saved!")
