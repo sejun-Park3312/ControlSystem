@@ -15,12 +15,14 @@ class TotalSystem:
         self.lock = threading.Lock()
         self.Running = True
 
+
     def Start(self):
         # Thread
         Thread_Vision = threading.Thread(target=self.VS.Tracking, daemon=True)
-        Thread_Arduino = threading.Thread(target=self.AD.ManualPWM, daemon=True)
         Thread_Vision.start()
-        Thread_Arduino.start()
+
+        # Thread_Arduino = threading.Thread(target=self.AD.ManualPWM, daemon=True)
+        # Thread_Arduino.start()
 
         StartTime = time.time()
         while self.Running:
@@ -28,6 +30,7 @@ class TotalSystem:
             if cv2.waitKey(1) == 27:  # ESC
                 self.VS.Running = False
                 self.AD.Running = False
+                self.Running = False
                 print("Test Stopped!")
                 break
 
@@ -36,7 +39,11 @@ class TotalSystem:
                 self.CT.Z_Target = self.VS.Z
 
             PWM = self.CT.Get_PWM()
+            self.AD.Send_PWM(PWM)
             print(PWM)
+
+
+        print("TotalSystem Ended!")
 
 
 
