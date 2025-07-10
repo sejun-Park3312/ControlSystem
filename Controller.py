@@ -5,7 +5,7 @@ import math
 import threading
 import numpy as np
 
-class Control:
+class Controller:
     def __init__(self):
         # Basic Magnet Functions
         self.BF = BasicMagnetFuns()
@@ -37,6 +37,7 @@ class Control:
         self.lock = threading.Lock()
         self.Running = True
         self.PWM = 0
+        self.Z_Target = 0
 
 
     def Array(self):
@@ -83,16 +84,19 @@ class Control:
         return Az_Coeff
 
 
-    def Get_Current(self, Z_Target):
+    def Get_PWM(self, Z_Target):
+        Z_Error = self.Z_Reference - (self.Z_System - Z_Target)
+        F_pid = self.pid(Z_Error, dt = self.SamplingTime)
+        I = (F_pid - self.MagnetArray_Force(Z_Target) - self.F_Buoyance + self.Weight) / self.CoilArray_ACoeff(Z_Target)
+        PWM = round(np.clip(I, 0, self.I_Max) * 255 / self.I_Max)
+        return PWM
+
+    def Control(self):
+
+        StartTime = time.time()
         while self.Running:
-            Z_Error = self.Z_Reference - (self.Z_System - Z_Target)
-            F_pid = self.pid(Z_Error, dt = self.SamplingTime)
-            I_input = (F_pid + self.MagnetArray_Force(Z_Target) + self.F_Buoyance - self.Weight) / self.CoilArray_ACoeff(Z_Target)
-            self.I_discrete = float(np.round(np.clip(I_input, 0, self.I_Max) / 0.02) * 0.02)
-
-            ZdTIT_Data.append((Z, dT, self.I_discrete, time.time()))
-
-
+            with self.lock:
+                Get_Current
 
 
 
