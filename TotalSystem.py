@@ -38,7 +38,7 @@ class TotalSystem:
             with self.lock:
                 self.CT.Z_Target = self.VS.Z
                 PWM = self.CT.Get_PWM()
-                self.Data.AppendData(self.DataName, [(self.CT.Z_Reference - (self.CT.Z_System - self.CT.Z_Target)),
+                self.ControlData.AppendData(self.DataName, [(self.CT.Z_Reference - (self.CT.Z_System - self.CT.Z_Target)),
                                                      self.CT.Z_System, self.CT.Z_Target, PWM])
 
             self.AD.Send_PWM(PWM)
@@ -53,5 +53,5 @@ class TotalSystem:
         # Align Vision Timestamp to Reference
         self.ControlData.Data[self.DataName]["Time"]["StartTime"] = self.VS.VisionData.Data[self.VS.DataName]["Time"]["StartTime"]
         # Save Data
-        self.VS.VisionData.Data.SaveData(self.VS.DataName, self.VS.DataName)
-        self.ControlData.Data.SaveData(self.DataName, self.DataName)
+        self.VS.VisionData.SaveData(self.VS.DataName, self.VS.DataName)
+        self.ControlData.SaveData(self.DataName, self.DataName)
