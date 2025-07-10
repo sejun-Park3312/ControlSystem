@@ -2,7 +2,7 @@ import cv2
 import threading
 import numpy as np
 import time
-import csv
+from RealTimeData_Recorder import RealTimeData_Recorder
 
 class Vision:
     def __init__(self):
@@ -19,25 +19,20 @@ class Vision:
         self.lock = threading.Lock()
         self.Z = 0
 
-        # 계산되는 파라미터들...
-        self.Cam1, self.Cam2, Cam1_Params, Cam2_Params = self.Ready()
-        self.R_World2Cam1 = np.array([[1, 0, 0],
-                      [0, 0, 1],
-                      [0, -1, 0]], dtype=np.float64)
-        self.P_World2Cam1 = np.array([[0],
-                      [-200/1000],
-                      [self.Z_Offset]], dtype=np.float64)  # 이동 벡터 (3x1)
-        self.T_World2Cam1 = T = np.vstack((np.hstack((self.R_World2Cam1, self.P_World2Cam1.reshape(3,1))), [[0, 0, 0, 1]]))
+        # Ready
+        self.Cam1 = self.Cam2 = self.P1 = self.P2 = self.K1 = self.K2 = self.D1 = self.D2 = self.ROI_1 = self.ROI_2 =None
+        self.T_World2Cam1 = None
+        self.Ready()
 
         print("Vision Ready!")
 
 
     def Ready(self):
         # Camera Parameter
-        K1 = np.load('Cam_Data/cam_K_1.npy')
-        K2 = np.load('Cam_Data/cam_K_2.npy')
-        D1 = np.load('Cam_Data/cam_D_1.npy')
-        D2 = np.load('Cam_Data/cam_D_2.npy')
+        self.K1 = np.load('Cam_Data/cam_K_1.npy')
+        self.K2 = np.load('Cam_Data/cam_K_2.npy')
+        self.D1 = np.load('Cam_Data/cam_D_1.npy')
+        self.D2 = np.load('Cam_Data/cam_D_2.npy')
 
         # Camera 1 to 2 Transformation Matrix
         R = np.array([[0, 0, 1],
@@ -49,23 +44,29 @@ class Vision:
                       [200/1000]], dtype=np.float64)  # 이동 벡터 (3x1)
 
         # Projection Matrix
-        P1 = K1 @ np.hstack((np.eye(3), np.zeros((3, 1))))
-        P2 = K2 @ np.hstack((R, T.reshape(3, 1)))
+        self.P1 = self.K1 @ np.hstack((np.eye(3), np.zeros((3, 1))))
+        self.P2 = self.K2 @ np.hstack((R, T.reshape(3, 1)))
 
         # Open Camera
-        Cam1 = cv2.VideoCapture(1)
-        Cam1.set(cv2.CAP_PROP_FPS, 100)
-        Cam2 = cv2.VideoCapture(2)
-        Cam2.set(cv2.CAP_PROP_FPS, 100)
+        self.Cam1 = cv2.VideoCapture(1)
+        self.Cam1.set(cv2.CAP_PROP_FPS, 100)
+        self.Cam2 = cv2.VideoCapture(2)
+        self.Cam2.set(cv2.CAP_PROP_FPS, 100)
 
         # Set ROI(x,y,w,h)
-        ROI_1 = [50, 125, 550, 300]
-        ROI_2 = [80, 60, 450, 350]
+        self.ROI_1 = [50, 125, 550, 300]
+        self.ROI_2 = [80, 60, 450, 350]
 
-        Cam1_Params = {"ProjectionMatrix": P1, "IntrinsicMatrix": K1, "DistortionCoeff": D1, "ROI": ROI_1}
-        Cam2_Params = {"ProjectionMatrix": P2, "IntrinsicMatrix": K2, "DistortionCoeff": D2, "ROI": ROI_2}
 
-        return Cam1, Cam2, Cam1_Params, Cam2_Params
+        # World Frame Alignment
+        R_World2Cam1 = np.array([[1, 0, 0],
+                      [0, 0, 1],
+                      [0, -1, 0]], dtype=np.float64)
+        P_World2Cam1 = np.array([[0],
+                      [-200/1000],
+                      [self.Z_Offset]], dtype=np.float64)  # 이동 벡터 (3x1)
+        self.T_World2Cam1 = np.vstack((np.hstack((R_World2Cam1, P_World2Cam1.reshape(3,1))), [[0, 0, 0, 1]]))
+
 
 
     def Get_Center(self, frame):
