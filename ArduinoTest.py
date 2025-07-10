@@ -1,28 +1,32 @@
-import serial
+from Arduino import Arduino
 import time
 import keyboard  # ESC 키 감지용
 
-# 1️⃣ 시리얼 연결
-ser = serial.Serial('COM4', 115200)
-time.sleep(2)  # 아두이노 리셋 대기
-
-print("start!")
-pwm = 120
+AD = Arduino()
+PWM = 200                                    
+OnOff = False
 try:
     while True:
         # ESC 누르면 종료
         if keyboard.is_pressed('esc'):
-            ser.write(f"{0}\n".encode())
-            ser.write(b"999\n")
-            print("ESC 눌림 → STOP 명령어 전송 (999)")
+            AD.Disconnect()
             break
 
-        ser.write(f"{pwm}\n".encode())
-        time.sleep(10/1000)
+        if keyboard.is_pressed('space'):
+            if not OnOff:
+                OnOff = True  # 눌렸다고 표시
+        else:
+            OnOff = False  # 뗐으면 다시 대기 상태로
+
+        if OnOff == True:
+            AD.Send_PWM(PWM)
+        else:
+            AD.Send_PWM(0)
+
+        time.sleep(50/1000)
 
 except KeyboardInterrupt:
-    print("Ctrl+C 종료됨.")
+    AD.Disconnect()
 
 finally:
-    ser.close()
-    print("Serial closed.")
+    AD.Disconnect()
