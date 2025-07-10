@@ -24,9 +24,9 @@ class Vision:
         self.Ready()
 
         # Data
-        self.Data = RealTimeData_Recorder()
+        self.VisionData = RealTimeData_Recorder()
         self.DataName = "VisionData"
-        self.Data.DefineData(self.DataName, ["X", "Y", "Z"])
+        self.VisionData.DefineData(self.DataName, ["X", "Y", "Z"])
 
         print("Vision Ready!")
 
@@ -173,7 +173,7 @@ class Vision:
                     CurrPosition = Position
                     AvgPosition = [x / 2 + y / 2 for x, y in zip(AvgPosition, Position)]
 
-            self.Data.AppendData(self.DataName, AvgPosition)
+            self.VisionData.AppendData(self.DataName, AvgPosition)
 
             # Threading Lock
             with self.lock:

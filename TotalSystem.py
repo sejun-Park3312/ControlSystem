@@ -15,9 +15,9 @@ class TotalSystem:
         self.lock = threading.Lock()
         self.Running = True
 
-        self.Data = RealTimeData_Recorder()
+        self.ControlData = RealTimeData_Recorder()
         self.DataName = "ControlData"
-        self.Data.DefineData(self.DataName, ["Z_Error", "Z_System", "Z_Target", "PWM"])
+        self.ControlData.DefineData(self.DataName, ["Z_Error", "Z_System", "Z_Target", "PWM"])
 
 
     def Start(self):
@@ -51,7 +51,7 @@ class TotalSystem:
     def SaveResults(self):
         print("Saving Results...")
         # Align Vision Timestamp to Reference
-        self.Data[self.DataName]["Time"]["StartTime"] = self.VS.Data[self.VS.DataName]["Time"]["StartTime"]
+        self.ControlData.Data[self.DataName]["Time"]["StartTime"] = self.VS.VisionData.Data[self.VS.DataName]["Time"]["StartTime"]
         # Save Data
-        self.VS.Data.SaveData(self.VS.DataName, self.VS.DataName)
-        self.VS.Data.SaveData(self.DataName, self.DataName)
+        self.VS.VisionData.Data.SaveData(self.VS.DataName, self.VS.DataName)
+        self.ControlData.Data.SaveData(self.DataName, self.DataName)
