@@ -1,16 +1,21 @@
-import threading
-import numpy as np
 from simple_pid import PID
 from BasicMagnetFuns import BasicMagnetFuns
 import time
+import math
+import threading
+import numpy as np
 
 class Control:
     def __init__(self):
         # Basic Magnet Functions
         self.BF = BasicMagnetFuns()
 
+        # Distance Offsets
+        self.Z_Reference = 100 / 1000 # system(센터 코일 높이)과 Target 사이 Reference 거리
+        self.Z_System = 100/1000 # system 높이(World 좌표계 기준)
+
         # Array
-        self.C_Points, self.C_Angles, self.M_Points, self.M_Angles = self.Ready()
+        self.C_Points, self.C_Angles, self.M_Points, self.M_Angles = self.Array()
 
         # DipoleMoment Magnitude
         self.Ms = 2
@@ -21,10 +26,6 @@ class Control:
         self.F_Buoyance = 0.005146777750500
         self.Weight = 0.006776951342543
         self.I_Max = 1.5
-
-        # Distance Offsets
-        self.Z_Offset = 100 / 1000 # system(센터 코일 높이)과 Target 사이 Reference 거리
-        self.Reference = 0 # 추종값
 
         # PID
         self.SamplingTime = 25 / 1000
@@ -38,88 +39,47 @@ class Control:
         self.PWM = 0
 
 
-    def Ready(self):
+    def Array(self):
         # Coil/Magent Array
         Data = np.load("Array_Data/Data.npz")
-        self.C_Points = Data['C_Points']
-        self.C_Angles = Data['C_Angles']
-        self.M_Points = Data['M_Points']
-        self.M_Angles = Data['M_Angles']
+        C_Points = Data['C_Points']
+        C_Angles = Data['C_Angles']
+        M_Points = Data['M_Points']
+        M_Angles = Data['M_Angles']
 
-        return self.C_Points, self.C_Angles, self.M_Points, self.M_Angles
-
-
-
-
-
-        ZdTIT_Data = []
-        while self.running:
-            time.sleep(self.Ts_Control)
-            with self.lock:
-                Z = self.Z
-                dT = self.dT
-            F_need = self.pid(Z, dt = dT)
-            I_input = (self.Weight + F_need - self.MF.MagnetArray_Force(Z + self.Ref_Movement) - self.F_Buoyance) / self.MF.CoilArray_ACoeff(Z + self.Ref_Movement)
-            self.I_discrete = float(np.round(np.clip(I_input, 0, self.I_Max) / 0.02) * 0.02)
-
-            ZdTIT_Data.append((Z, dT, self.I_discrete, time.time()))
-
-        with open('Results_Data/ZdTIT_Data.csv', 'w', newline='') as f:
-            writer = csv.writer(f)
-            writer.writerow(['Z', 'dT', 'I', 'time'])
-            for row in ZdTIT_Data:
-                writer.writerow(row)
-
-    def Arduino(self, I):
-
-        for i in range(8):
-            self.pwm_list[i].write(I/self.I_Max)
+        C_Points[:,2] = self.Z_Reference
+        M_Points[:,2] = self.Z_Reference + 40/1000
+        return C_Points, C_Angles, M_Points, M_Angles
 
 
-    def Start(self):
+    def Angle2Direction(self, Angle):
+        Direction = np.array([math.sin(Angle[1]) * math.cos(Angle[0]), math.sin(Angle[1]) * math.sin(Angle[0]), math.cos(Angle[1])])
+        return Direction
 
-        # Vision Thread
-        vision_thread = threading.Thread(target=self.Vision)
-        vision_thread.daemon = True
-        vision_thread.start()
 
-        # Control Thread
-        control_thread = threading.Thread(target=self.Control)
-        control_thread.daemon = True
-        control_thread.start()
+    def MagnetArray_Force(self, Z_Target):
+        m_target = np.array([1, 0, 0]) * self.Mt
+        F = np.array([[0], [0], [0]])
+        for i in range(self.M_Points.shape[0]):
+            m_source = self.Angle2Direction(self.M_Angles[i, :]) * self.Ms
+            r_source2target = np.array([[0, 0, Z_Target]]) - self.M_Points[i, :]
+            F = F + self.BF.Cal_MagnetForce(r_source2target, m_source, m_target)
 
-        # Arduino Start
-        self.it.start()
-        time.sleep(1)
-        for i in range(8):
-            self.brk_list[i].write(0)  # 브레이크 해제
+        Fz = F[2]
+        return Fz
 
-        # Start(Esc 누르면 탈출)
-        print(f"⏹️ 드라이버 {i} 시작!!!\n")
-        Curr_Time = 0
-        try:
-            while self.running:
-                time.sleep(self.Ts_Control)
-                self.Arduino(self.I_discrete)
-                if time.time() - Curr_Time > 1:
-                    print(f"Z: {self.Z*1000:.2f} mm, A: {self.I_discrete:.2f} A")
-                    Curr_Time = time.time()
 
-                if cv2.waitKey(1) == 27:  # ESC
-                    self.running = False
-                    break
+    def CoilArray_ACoeff(self, z_target):
 
-        except KeyboardInterrupt:
-            self.running = False  # 종료 플래그 내려서 두 스레드 종료
-            vision_thread.join()
-            control_thread.join()
+        C_Points = self.C_Points
+        C_Angles = self.C_Angles
+        m_target = np.array([1, 0, 0]) * self.Mt
 
-        for i in range(8):
-            self.pwm_list[i].write(0)  # PWM OFF
-            self.brk_list[i].write(1)  # 브레이크 ON
+        A_vec = np.array([[0], [0], [0]])
+        for i in range(C_Points.shape[0]):
+            m_source_i = self.Angle2Direction(C_Angles[i, :]) * self.Mc
+            r_source2target = np.array([[0, 0, z_target]]) - C_Points[i, :]
+            A_vec = A_vec + self.BF.Cal_MagnetForce(r_source2target, m_source_i, m_target)
 
-        print(f"⏹️ 드라이버 {i} 정지됨!!!\n")
-        time.sleep(1)  # 다음 드라이버 전환 전 잠깐 대기
-
-        # 종료 처리
-        self.board.exit()
+        Az_Coeff = A_vec[2]
+        return Az_Coeff
