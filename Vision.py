@@ -52,13 +52,20 @@ class Vision:
         self.P2 = self.K2 @ np.hstack((R, T.reshape(3, 1)))
 
         # Open Camera
-        self.Cam1 = cv2.VideoCapture(1)
-        self.Cam1.set(cv2.CAP_PROP_FPS, 100)
-        self.Cam2 = cv2.VideoCapture(2)
+        self.Cam1 = cv2.VideoCapture('/dev/video2', cv2.CAP_V4L2)  # USB 캠 1
+        self.Cam1.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*'MJPG'))
+        self.Cam1.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+        self.Cam1.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+        self.Cam1.set(cv2.CAP_PROP_FPS, 100)  # 100fps는 대부분 USB 캠에서 지원 안 됨
+
+        self.Cam2 = cv2.VideoCapture('/dev/video4', cv2.CAP_V4L2)  # USB 캠 2
+        self.Cam2.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*'MJPG'))
+        self.Cam2.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+        self.Cam2.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
         self.Cam2.set(cv2.CAP_PROP_FPS, 100)
 
         # Set ROI(x,y,w,h)
-        self.ROI_1 = [50, 125, 550, 300]
+        self.ROI_1 = [50, 100, 550, 300]
         self.ROI_2 = [80, 60, 450, 350]
 
 
@@ -147,6 +154,7 @@ class Vision:
             # Show Image
             cv2.imshow("Camera 1", frame1_undist)
             cv2.imshow("Camera 2", frame2_undist)
+            cv2.waitKey(1)
 
             # Return
             return Position
@@ -164,7 +172,7 @@ class Vision:
             while time.time() - CurrTime < self.SamplingTime:
 
                 Position = self.Get_Position()
-                if cv2.waitKey(1) == 27:  # ESC
+                if cv2.waitKey(1) & 0xFF == 27:  # ESC
                     self.Running = False
                     print("Vision Stopped")
                     break

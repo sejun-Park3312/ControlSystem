@@ -4,19 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="35704c77-9429-4047-a464-64d1a579fc76" name="Changes" comment=".">
-      <change beforePath="$PROJECT_DIR$/Arduino.py" beforeDir="false" afterPath="$PROJECT_DIR$/Arduino.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ArduinoTest.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Arduino_Test.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MakeFuns.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Run.py" beforeDir="false" afterPath="$PROJECT_DIR$/Run.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Total_Test.py" beforeDir="false" />
+    <list default="true" id="35704c77-9429-4047-a464-64d1a579fc76" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/VIsionTest.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Vision.py" beforeDir="false" afterPath="$PROJECT_DIR$/Vision.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/VisionArduino_Test.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/VisionControl.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/VisionControlArduino_Test.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/VisionTest.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,7 +28,7 @@
     </option>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="Total_System0710" />
+        <entry key="$PROJECT_DIR$" value="MakeFuns" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -80,13 +70,18 @@
     "Python.Run.executor": "Run",
     "Python.TestVision.executor": "Run",
     "Python.Total_Test.executor": "Run",
+    "Python.VIsionTest.executor": "Run",
     "Python.VisionArduino_Test.executor": "Run",
     "Python.VisionControl.executor": "Run",
     "Python.VisionTest.executor": "Run",
     "Python.data.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "FirstSuccess__250710",
+    "git-widget-placeholder": "New250722",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
     "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
 }]]></component>
@@ -253,6 +248,9 @@
     <option name="localTasksCounter" value="19" />
     <servers />
   </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
@@ -267,5 +265,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="." />
     <option name="LAST_COMMIT_MESSAGE" value="." />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/ControlSystem$VIsionTest.coverage" NAME="VIsionTest Coverage Results" MODIFIED="1753117742106" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
