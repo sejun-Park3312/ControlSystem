@@ -7,7 +7,7 @@ ser = serial.Serial('COM4', 115200)
 time.sleep(2)  # 아두이노 리셋 대기
 
 print("start!")
-pwm = 0
+pwm = 120
 try:
     while True:
         # ESC 누르면 종료
