@@ -28,8 +28,7 @@ class TotalSystem:
         StartTime = time.time()
         while self.Running:
 
-            cv2.waitKey(1)
-            if self.VS.Running == False:
+            if cv2.waitKey(1) == 27 or self.VS.Running == False:
                 self.AD.Running = False
                 self.Running = False
                 print("Test Stopped!")
@@ -43,7 +42,7 @@ class TotalSystem:
                                                      self.CT.Z_System, self.CT.Z_Target, PWM])
 
             self.AD.Send_PWM(PWM)
-            print(PWM)
+
 
         self.AD.Disconnect()
         print("TotalSystem Ended!")
