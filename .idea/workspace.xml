@@ -5,8 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="35704c77-9429-4047-a464-64d1a579fc76" name="Changes" comment=".">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TotalSystem.py" beforeDir="false" afterPath="$PROJECT_DIR$/TotalSystem.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arduino.py" beforeDir="false" afterPath="$PROJECT_DIR$/Arduino.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ArduinoTest.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Arduino_Test.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/MakeFuns.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Run.py" beforeDir="false" afterPath="$PROJECT_DIR$/Run.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Total_Test.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Vision.py" beforeDir="false" afterPath="$PROJECT_DIR$/Vision.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/VisionArduino_Test.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/VisionControl.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/VisionControlArduino_Test.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/VisionTest.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,7 +38,7 @@
     </option>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="VisionControl" />
+        <entry key="$PROJECT_DIR$" value="Total_System0710" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -76,7 +86,7 @@
     "Python.data.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "Total__System0710",
+    "git-widget-placeholder": "FirstSuccess__250710",
     "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
 }]]></component>
@@ -232,7 +242,15 @@
       <option name="project" value="LOCAL" />
       <updated>1752155030431</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary=".">
+      <option name="closed" value="true" />
+      <created>1752155532552</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1752155532552</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

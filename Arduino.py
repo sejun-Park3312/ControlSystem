@@ -49,6 +49,5 @@ class Arduino:
                     self.Send_PWM(0)
 
                 time.sleep(50/1000)
-
         except KeyboardInterrupt:
             self.Disconnect()

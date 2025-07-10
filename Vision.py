@@ -10,7 +10,7 @@ class Vision:
         print("Vision Initializing...")
 
         # Vision Setting
-        self.Z_Offset = 10/1000
+        self.Z_Offset = 15/1000
         self.SamplingTime = 20/1000
         self.Running = True
         self.XYZT_Data = []

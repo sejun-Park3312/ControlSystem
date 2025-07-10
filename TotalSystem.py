@@ -14,7 +14,8 @@ class TotalSystem:
 
         self.lock = threading.Lock()
         self.Running = True
-
+        self.VisionData = {}
+        self.ControlData = {}
 
     def Start(self):
         # Thread

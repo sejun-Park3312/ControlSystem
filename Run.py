@@ -1,4 +1,4 @@
-from VisionControl import VisionControl
+from TotalSystem import TotalSystem
 
-VC = VisionControl()
-VC.Start()
+TS = TotalSystem()
+TS.Start()
