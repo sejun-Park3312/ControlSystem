@@ -5,7 +5,7 @@ import math
 import threading
 import numpy as np
 
-class Controller:
+class Control:
     def __init__(self):
         # Basic Magnet Functions
         self.BF = BasicMagnetFuns()
@@ -58,45 +58,39 @@ class Controller:
         return Direction
 
 
-    def MagnetArray_Force(self, Z_Target):
+    def MagnetArray_Force(self):
         m_target = np.array([1, 0, 0]) * self.Mt
         F = np.array([[0], [0], [0]])
         for i in range(self.M_Points.shape[0]):
             m_source = self.Angle2Direction(self.M_Angles[i, :]) * self.Ms
             # World 좌표계 기준
-            r_source2target = np.array([[0, 0, Z_Target]]) - (self.M_Points[i, :] + np.array([0, 0, self.Z_System + 40/1000]))
+            r_source2target = np.array([[0, 0, self.Z_Target]]) - (self.M_Points[i, :] + np.array([0, 0, self.Z_System + 40/1000]))
             F = F + self.BF.Cal_MagnetForce(r_source2target, m_source, m_target)
 
         Fz = F[2]
         return Fz
 
 
-    def CoilArray_ACoeff(self, Z_Target):
+    def CoilArray_ACoeff(self):
         m_target = np.array([1, 0, 0]) * self.Mt
         A_vec = np.array([[0], [0], [0]])
         for i in range(self.C_Points.shape[0]):
             m_source_i = self.Angle2Direction(self.C_Angles[i, :]) * self.Mc
             # World 좌표계 기준
-            r_source2target = np.array([[0, 0, Z_Target]]) - (self.C_Points[i, :] + np.array([0, 0, self.Z_System]))
+            r_source2target = np.array([[0, 0, self.Z_Target]]) - (self.C_Points[i, :] + np.array([0, 0, self.Z_System]))
             A_vec = A_vec + self.BF.Cal_MagnetForce(r_source2target, m_source_i, m_target)
 
         Az_Coeff = A_vec[2]
         return Az_Coeff
 
 
-    def Get_PWM(self, Z_Target):
-        Z_Error = self.Z_Reference - (self.Z_System - Z_Target)
+    def Get_PWM(self):
+        Z_Error = self.Z_Reference - (self.Z_System - self.Z_Target)
         F_pid = self.pid(Z_Error, dt = self.SamplingTime)
-        I = (F_pid - self.MagnetArray_Force(Z_Target) - self.F_Buoyance + self.Weight) / self.CoilArray_ACoeff(Z_Target)
+        I = (F_pid - self.MagnetArray_Force() - self.F_Buoyance + self.Weight) / self.CoilArray_ACoeff()
         PWM = round(np.clip(I, 0, self.I_Max) * 255 / self.I_Max)
         return PWM
 
-    def Control(self):
-
-        StartTime = time.time()
-        while self.Running:
-            with self.lock:
-                Get_Current
 
 
 
