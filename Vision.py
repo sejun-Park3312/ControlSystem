@@ -20,7 +20,7 @@ class Vision:
         self.Z = 0
 
         # 계산되는 파라미터들...
-        self.Cam1, self.Cam2, self.P1, self.P2, self.K1, self.K2, self.D1, self.D2, self.ROI_1, self.ROI_2 = self.Ready()
+        self.Cam1, self.Cam2, Cam1_Params, Cam2_Params = self.Ready()
         self.R_World2Cam1 = np.array([[1, 0, 0],
                       [0, 0, 1],
                       [0, -1, 0]], dtype=np.float64)
@@ -62,7 +62,10 @@ class Vision:
         ROI_1 = [50, 125, 550, 300]
         ROI_2 = [80, 60, 450, 350]
 
-        return Cam1, Cam2, P1, P2, K1, K2, D1, D2, ROI_1, ROI_2
+        Cam1_Params = {"ProjectionMatrix": P1, "IntrinsicMatrix": K1, "DistortionCoeff": D1, "ROI": ROI_1}
+        Cam2_Params = {"ProjectionMatrix": P2, "IntrinsicMatrix": K2, "DistortionCoeff": D2, "ROI": ROI_2}
+
+        return Cam1, Cam2, Cam1_Params, Cam2_Params
 
 
     def Get_Center(self, frame):
@@ -146,7 +149,6 @@ class Vision:
 
     def Tracking(self):
         self.XYZT_Data = [[0, 0, 0, 0]]  # X,Y,Z,T
-        StartTime = time.time()
         CurrTime = time.time()
 
         print("Start Tracking!")
@@ -165,7 +167,7 @@ class Vision:
                 if Position:
                     AvgPosition = [x / 2 + y / 2 for x, y in zip(AvgPosition, Position)]
 
-            self.XYZT_Data.append(AvgPosition + [time.time() - StartTime])
+            self.XYZT_Data.append(AvgPosition + [time.time()])
 
             # Threading Lock
             with self.lock:
