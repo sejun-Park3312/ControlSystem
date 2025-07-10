@@ -50,9 +50,9 @@ class Vision:
 
         # Open Camera
         Cam1 = cv2.VideoCapture(1)
-        Cam1.set(cv2.CAP_PROP_FPS, 120)
+        Cam1.set(cv2.CAP_PROP_FPS, 100)
         Cam2 = cv2.VideoCapture(2)
-        Cam2.set(cv2.CAP_PROP_FPS, 120)
+        Cam2.set(cv2.CAP_PROP_FPS, 100)
 
         # Set ROI(x,y,w,h)
         ROI_1 = [50, 125, 550, 300]
@@ -85,7 +85,7 @@ class Vision:
         ret2, frame2 = self.Cam2.read()
 
         if not ret1 or not ret2:
-            pass
+            return None
 
         # Undistorting
         frame1_undist = cv2.undistort(frame1, self.K1, self.D1)
@@ -135,32 +135,34 @@ class Vision:
             # Show Image
             cv2.imshow("Camera 1", frame1_undist)
             cv2.imshow("Camera 2", frame2_undist)
-
+            cv2.waitKey(1)
             # Return
             return Position
 
 
-    def Start_Tracking(self):
+    def Tracking(self):
         self.XYZT_Data = [[0, 0, 0, 0]]  # X,Y,Z,T
         StartTime = time.time()
         CurrTime = time.time()
 
         while self.Running:
             AvgPosition = self.XYZT_Data[-1][0:3]
+            CurrTime = time.time()
 
-            if time.time() - CurrTime >= self.SamplingTime:
+            while time.time() - CurrTime < self.SamplingTime:
                 Position = self.Get_Position()
+                cv2.waitKey(1)
                 if Position:
                     AvgPosition = [x / 2 + y / 2 for x, y in zip(AvgPosition, Position)]
-                CurrTime = time.time()
 
             self.XYZT_Data.append(AvgPosition + [time.time() - StartTime])
+
             # Threading Lock
             with self.lock:
                     self.Z = AvgPosition[2]
 
 
-    def End_Tracking(self):
+    def CloseVision(self):
 
         self.Running = False
         self.Cam1.release()
