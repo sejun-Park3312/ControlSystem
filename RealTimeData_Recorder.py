@@ -38,7 +38,7 @@ class RealTimeData_Recorder:
         else:
             StartTime = time.time()
             self.Data[DataName]['Time']['StartTime'] = StartTime
-            self.Data[DataName]['Time']['TimeStamp'].append(0)
+            self.Data[DataName]['Time']['TimeStamp'].append(time.time())
 
 
     def SaveData(self, Data, FileName):

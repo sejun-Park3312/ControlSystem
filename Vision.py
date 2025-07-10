@@ -13,7 +13,6 @@ class Vision:
         self.Z_Offset = 15/1000
         self.SamplingTime = 20/1000
         self.Running = True
-        self.XYZT_Data = []
 
         # Threading
         self.lock = threading.Lock()
@@ -23,6 +22,10 @@ class Vision:
         self.Cam1 = self.Cam2 = self.P1 = self.P2 = self.K1 = self.K2 = self.D1 = self.D2 = self.ROI_1 = self.ROI_2 =None
         self.T_World2Cam1 = None
         self.Ready()
+
+        # Data
+        self.Data = RealTimeData_Recorder()
+        self.Data.DefineData("VisionData", ["X", "Y", "Z"])
 
         print("Vision Ready!")
 
@@ -149,12 +152,12 @@ class Vision:
 
 
     def Tracking(self):
-        self.XYZT_Data = [[0, 0, 0, 0]]  # X,Y,Z,T
+        CurrPosition = [0, 0, 0]
         CurrTime = time.time()
 
         print("Start Tracking!")
         while self.Running:
-            AvgPosition = self.XYZT_Data[-1][0:3]
+            AvgPosition = CurrPosition
             CurrTime = time.time()
 
             while time.time() - CurrTime < self.SamplingTime:
@@ -166,9 +169,10 @@ class Vision:
                     break
 
                 if Position:
+                    CurrPosition = Position
                     AvgPosition = [x / 2 + y / 2 for x, y in zip(AvgPosition, Position)]
 
-            self.XYZT_Data.append(AvgPosition + [time.time()])
+            self.Data.AppendData("VisionData", AvgPosition)
 
             # Threading Lock
             with self.lock:

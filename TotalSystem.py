@@ -11,15 +11,12 @@ class TotalSystem:
         self.VS = Vision()
         self.CT = Control()
         self.AD = Arduino()
-        self.DR = RealTimeData_Recorder()
 
         self.lock = threading.Lock()
         self.Running = True
 
-
-    def Ready(self):
-        self.DR.DefineData("VisionData", ["X", "y", "Z"])
-        self.DR.DefineData("ControlData", ["Z_Error", "Z_System", "Z_Target", "PWM"])
+        self.Data = RealTimeData_Recorder()
+        self.Data.DefineData("ControlData", ["Z_Error", "Z_System", "Z_Target", "PWM"])
 
 
     def Start(self):
