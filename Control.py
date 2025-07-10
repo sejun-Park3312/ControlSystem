@@ -7,12 +7,14 @@ import numpy as np
 
 class Control:
     def __init__(self):
+        print("Controller Initializing...")
         # Basic Magnet Functions
         self.BF = BasicMagnetFuns()
 
         # Distance Offsets
         self.Z_Reference = 100 / 1000 # system(센터 코일 높이)과 Target 사이 Reference 거리
         self.Z_System = 100/1000 # system 높이(World 좌표계 기준)
+        self.Z_Target = 0 # Target 높이(World 좌표계 기준)
 
         # Array
         self.C_Points, self.C_Angles, self.M_Points, self.M_Angles = self.Array()
@@ -33,11 +35,7 @@ class Control:
         self.pid = PID(Kp=self.PID_Gain, Kd=self.PID_Gain/10, Ki=0, setpoint = 0)
         self.pid.sample_time = self.SamplingTime
 
-        # Threading
-        self.lock = threading.Lock()
-        self.Running = True
-        self.PWM = 0
-        self.Z_Target = 0
+        print("Controller Ready!")
 
 
     def Array(self):

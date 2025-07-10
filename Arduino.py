@@ -12,16 +12,13 @@ class Arduino:
 
 
     def Send_PWM(self, PWM):
-
         if self.Running == True:
             self.ArduinoSerial.write(f"{PWM}\n".encode())
-
         else:
             self.Disconnect()
 
 
     def Disconnect(self):
-
         if self.Running == True:
             self.Running = False
             self.ArduinoSerial.write(f"{0}\n".encode())
@@ -30,8 +27,8 @@ class Arduino:
             self.ArduinoSerial.close()
             print("Arduino Disconnected!")
 
-    def ManualPWM(self):
 
+    def ManualPWM(self):
         PWM = 200
         OnOff = False
         try:
@@ -40,7 +37,6 @@ class Arduino:
                 if keyboard.is_pressed('esc'):
                     self.Disconnect()
                     break
-
                 if keyboard.is_pressed('space'):
                     if not OnOff:
                         OnOff = True
