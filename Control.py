@@ -47,8 +47,8 @@ class Control:
         M_Points = Data['M_Points']
         M_Angles = Data['M_Angles']
 
-        C_Points[:,2] = self.Z_Reference
-        M_Points[:,2] = self.Z_Reference + 40/1000
+        C_Points[:,2] = 0
+        M_Points[:,2] = 0
         return C_Points, C_Angles, M_Points, M_Angles
 
 
@@ -62,24 +62,37 @@ class Control:
         F = np.array([[0], [0], [0]])
         for i in range(self.M_Points.shape[0]):
             m_source = self.Angle2Direction(self.M_Angles[i, :]) * self.Ms
-            r_source2target = np.array([[0, 0, Z_Target]]) - self.M_Points[i, :]
+            # World 좌표계 기준
+            r_source2target = np.array([[0, 0, Z_Target]]) - (self.M_Points[i, :] + np.array([0, 0, self.Z_System + 40/1000]))
             F = F + self.BF.Cal_MagnetForce(r_source2target, m_source, m_target)
 
         Fz = F[2]
         return Fz
 
 
-    def CoilArray_ACoeff(self, z_target):
-
-        C_Points = self.C_Points
-        C_Angles = self.C_Angles
+    def CoilArray_ACoeff(self, Z_Target):
         m_target = np.array([1, 0, 0]) * self.Mt
-
         A_vec = np.array([[0], [0], [0]])
-        for i in range(C_Points.shape[0]):
-            m_source_i = self.Angle2Direction(C_Angles[i, :]) * self.Mc
-            r_source2target = np.array([[0, 0, z_target]]) - C_Points[i, :]
+        for i in range(self.C_Points.shape[0]):
+            m_source_i = self.Angle2Direction(self.C_Angles[i, :]) * self.Mc
+            # World 좌표계 기준
+            r_source2target = np.array([[0, 0, Z_Target]]) - (self.C_Points[i, :] + np.array([0, 0, self.Z_System]))
             A_vec = A_vec + self.BF.Cal_MagnetForce(r_source2target, m_source_i, m_target)
 
         Az_Coeff = A_vec[2]
         return Az_Coeff
+
+
+    def Get_Current(self, Z_Target):
+        while self.Running:
+            Z_Error = self.Z_Reference - (self.Z_System - Z_Target)
+            F_pid = self.pid(Z_Error, dt = self.SamplingTime)
+            I_input = (F_pid + self.MagnetArray_Force(Z_Target) + self.F_Buoyance - self.Weight) / self.CoilArray_ACoeff(Z_Target)
+            self.I_discrete = float(np.round(np.clip(I_input, 0, self.I_Max) / 0.02) * 0.02)
+
+            ZdTIT_Data.append((Z, dT, self.I_discrete, time.time()))
+
+
+
+
+

@@ -5,17 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="35704c77-9429-4047-a464-64d1a579fc76" name="Changes" comment=".">
-      <change afterPath="$PROJECT_DIR$/Control.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/VisionArduino_Test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Arduino.py" beforeDir="false" afterPath="$PROJECT_DIR$/Arduino.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Array_Data/Data.npz" beforeDir="false" afterPath="$PROJECT_DIR$/Array_Data/Data.npz" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Array_Data/data.py" beforeDir="false" afterPath="$PROJECT_DIR$/Array_Data/data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results_Data/XYZT_Data.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Results_Data/XYZT_Data.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Results_Data/ZdTIT_Data.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Results_Data/ZdTIT_Data.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Vision.py" beforeDir="false" afterPath="$PROJECT_DIR$/Vision.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/VisionControl.py" beforeDir="false" afterPath="$PROJECT_DIR$/VisionControl.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/VisionTest.py" beforeDir="false" afterPath="$PROJECT_DIR$/VisionTest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Control.py" beforeDir="false" afterPath="$PROJECT_DIR$/Control.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,23 +61,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.Arduino.executor": "Run",
-    "Python.ArduinoTest.executor": "Run",
-    "Python.Arduino_Test.executor": "Run",
-    "Python.Run.executor": "Run",
-    "Python.TestVision.executor": "Run",
-    "Python.VisionArduino_Test.executor": "Run",
-    "Python.VisionControl.executor": "Run",
-    "Python.VisionTest.executor": "Run",
-    "Python.data.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "Total__System0710",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.Arduino.executor&quot;: &quot;Run&quot;,
+    &quot;Python.ArduinoTest.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Arduino_Test.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Run.executor&quot;: &quot;Run&quot;,
+    &quot;Python.TestVision.executor&quot;: &quot;Run&quot;,
+    &quot;Python.VisionArduino_Test.executor&quot;: &quot;Run&quot;,
+    &quot;Python.VisionControl.executor&quot;: &quot;Run&quot;,
+    &quot;Python.VisionTest.executor&quot;: &quot;Run&quot;,
+    &quot;Python.data.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Total__System0710&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -184,7 +174,23 @@
       <option name="project" value="LOCAL" />
       <updated>1752144422317</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary=".">
+      <option name="closed" value="true" />
+      <created>1752150492434</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1752150492434</updated>
+    </task>
+    <task id="LOCAL-00012" summary=".">
+      <option name="closed" value="true" />
+      <created>1752151259988</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1752151259988</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
