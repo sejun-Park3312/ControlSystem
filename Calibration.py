@@ -11,7 +11,7 @@ objp[:, :2] = np.mgrid[0:CHECKERBOARD[0], 0:CHECKERBOARD[1]].T.reshape(-1, 2)
 objpoints = []  # 실제 좌표 (3D)
 imgpoints = []  # 이미지 상의 좌표 (2D)
 
-Cam1 = cv2.VideoCapture('/dev/video4', cv2.CAP_V4L2)  # USB 캠 1
+Cam1 = cv2.VideoCapture('/dev/video2', cv2.CAP_V4L2)  # USB 캠 1
 Cam1.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
 Cam1.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 sample_count = 0
@@ -60,8 +60,8 @@ if sample_count >= 3:  # 최소 3장 이상 있어야 캘리브레이션이 의�
     print("\n📐 캘리브레이션 수행 중...")
     ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
 
-    np.save("../Cam_Data/cam_K2.npy", mtx)
-    np.save("../Cam_Data/cam_D2.npy", dist)
+    np.save("Cam_Data/cam_K2.npy", mtx)
+    np.save("Cam_Data/cam_D2.npy", dist)
     print("카메라 행렬:\n", mtx)
     print("왜곡 계수:\n", dist)
 else:

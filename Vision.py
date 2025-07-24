@@ -39,11 +39,11 @@ class Vision:
         self.D2 = np.load('Cam_Data/cam_D2.npy')
 
         # Camera 1 to 2 Transformation Matrix
-        R = np.array([[0, 0, -1],
+        R = np.array([[0, 0, 1],
                       [0, 1, 0],
-                      [1, 0, 0]], dtype=np.float64)
+                      [-1, 0, 0]], dtype=np.float64)
 
-        T = np.array([[270/1000],
+        T = np.array([[-200/1000],
                       [0],
                       [200/1000]], dtype=np.float64)  # 이동 벡터 (3x1)
 
@@ -52,13 +52,13 @@ class Vision:
         self.P2 = self.K2 @ np.hstack((R, T.reshape(3, 1)))
 
         # Open Camera
-        self.Cam1 = cv2.VideoCapture('/dev/video2', cv2.CAP_V4L2)  # USB 캠 1
+        self.Cam1 = cv2.VideoCapture('/dev/video0', cv2.CAP_V4L2)  # USB 캠 1
         self.Cam1.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*'MJPG'))
         self.Cam1.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
         self.Cam1.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
         self.Cam1.set(cv2.CAP_PROP_FPS, 100)
 
-        self.Cam2 = cv2.VideoCapture('/dev/video4', cv2.CAP_V4L2)  # USB 캠 2
+        self.Cam2 = cv2.VideoCapture('/dev/video2', cv2.CAP_V4L2)  # USB 캠 2
         self.Cam2.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*'MJPG'))
         self.Cam2.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
         self.Cam2.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
@@ -133,7 +133,7 @@ class Vision:
 
             P_Cam1 = np.array([[x_Cam1], [y_Cam1], [z_Cam1], [1]])
             P_World = self.T_World2Cam1 @ P_Cam1
-            P_World = np.eye(4) @ P_Cam1
+
             x = float(P_World[0])
             y = float(P_World[1])
             z = float(P_World[2])
