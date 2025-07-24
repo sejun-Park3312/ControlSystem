@@ -60,9 +60,8 @@ if sample_count >= 3:  # 최소 3장 이상 있어야 캘리브레이션이 의�
     print("\n📐 캘리브레이션 수행 중...")
     ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
 
-    np.savez("../Cam_Data/cam_K2.npz", mtx)
-    np.savez("../Cam_Data/cam_D2.npz", dist)
-    print("✅ 완료! 결과 저장됨: webcam_calib_7x5.npz")
+    np.save("../Cam_Data/cam_K2.npy", mtx)
+    np.save("../Cam_Data/cam_D2.npy", dist)
     print("카메라 행렬:\n", mtx)
     print("왜곡 계수:\n", dist)
 else:
